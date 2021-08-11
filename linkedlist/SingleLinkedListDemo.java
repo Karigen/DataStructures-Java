@@ -23,6 +23,11 @@ package linkedlist;
  * 1.我们先找到需要删除的这个节点的前一个节点temp
  * 2.temp.next=temp.next.next
  * 3.被删除的节点，将不会有其他引用指向，会被垃圾回收机制回收
+ * 
+ * 单链表反转思路：
+ * 1.先定义一个节点reverseHead=new HeroNode();
+ * 2.从头到尾遍历原来的链表，每遍历一个节点，就将其取出，并放在新的链表reverseHead的最前端
+ * 3.原来的链表的head.next=reverseHead.next
  */
 
 public class SingleLinkedListDemo
@@ -39,11 +44,18 @@ public class SingleLinkedListDemo
 		
 		//创建一个链表
 		SingleLikedList singleLikedList=new SingleLikedList();
+		
 		//加入
-		//singleLikedList.add(hero1);
-		//singleLikedList.add(hero4);
-		//singleLikedList.add(hero2);
-		//singleLikedList.add(hero3);
+		singleLikedList.add(hero1);
+		singleLikedList.add(hero4);
+		singleLikedList.add(hero2);
+		singleLikedList.add(hero3);
+		
+		//测试一下单链表的反转功能
+		System.out.println("原来链表的情况");
+		singleLikedList.list();
+		System.out.println("反转单链表");
+		reverseList(singleLikedList.getHead());
 		
 		//加入按照编号的顺序
 		singleLikedList.addByOrder(hero1);
@@ -63,10 +75,93 @@ public class SingleLinkedListDemo
 		//删除一个节点
 		singleLikedList.del(1);
 		singleLikedList.del(4);
-		singleLikedList.del(2);
-		singleLikedList.del(3);
 		System.out.println("删除后的链表情况");
 		singleLikedList.list();
+		
+		//测试一下 求单链表中有效节点的个数
+		System.out.println("有效的节点个数="+getLength(singleLikedList.getHead()));//2
+		
+		//测试一下看看是否得到了倒数第K个节点
+		HeroNode res=findLastIndexNode(singleLikedList.getHead(),3);
+		System.out.println("res="+res);
+	}
+	//将单链表进行反转
+	public static void reverseList(HeroNode head)
+	{
+		//如果当前链表为空，或者只有一个节点，无需反转，直接返回
+		if (head.next==null||head.next.next==null)
+		{
+			return;
+		}
+		//定义一个辅助的指针（变量），帮助我们遍历原来的链表
+		HeroNode cur=head.next;
+		HeroNode next=null;//指向当前节点[cur]的下一个节点
+		HeroNode reverseHead=new HeroNode(0, "", "");
+		//遍历原来的链表，每遍历一个节点，就将其取出，并放在新的链表reverseHead的最前端
+		//动脑筋
+		while (cur!=null)
+		{
+			next=cur.next;//先暂时保存当前节点的下一个节点，因为后面需要使用
+			cur.next=reverseHead.next;//将cur的下一个节点指向新链表的最前端
+			reverseHead.next=cur;//将cur连接到新的链表上
+			cur=next;//让cur后移
+		}
+		//将head.next指向reverseHead.next，实现了单链表的反转
+		head.next=reverseHead.next;
+	}
+	
+	//查找单链表中的倒数第k个节点【新浪面试题】
+	//思路
+	//1.编写一个方法，接收head节点，同时接收一个index
+	//2.index表示倒数第index个节点
+	//3.先把链表从头到尾遍历，得到链表的总的长度 getLength
+	//4.得到size后，我们从链表的第一个开始遍历(size-index)个，就可以得到
+	//5.如果找到了，就返回该节点，否则返回null
+	public static HeroNode findLastIndexNode(HeroNode head,int index)
+	{
+		//判断如果链表为空，返回null
+		if (head.next==null)
+		{
+			return null;//没有找到
+		}
+		//第一个遍历得到链表的长度（节点个数）
+		int size=getLength(head);
+		//第二次遍历size-index位置，就是我们倒数的第K个节点
+		//先做一个index的校验
+		if (index<=0||index>size)
+		{
+			return null;
+		}
+		//定义辅助变量,for 循环定位到倒数的index
+		HeroNode cur=head.next;//3 //3-1=2
+		for (int i=0;i<size-index;i++)
+		{
+			cur=cur.next;
+		}
+		return cur;
+	}
+	
+	//方法：获取到单链表的结点的个数（如果是带头结点的链表，需要不统计头节点）
+	/**
+	 * 
+	 * @param head 链表的头节点
+	 * @return 返回的是有效节点的个数
+	 */
+	public static int getLength(HeroNode head)
+	{
+		if (head.next==null)//空链表
+		{
+			return 0;
+		}
+		int length=0;
+		//定义一个辅助的变量，这里我们没有统计头节点
+		HeroNode cur=head.next;
+		while (cur!=null)
+		{
+			length++;
+			cur=cur.next;//遍历
+		}
+		return length;
 	}
 
 }
@@ -77,6 +172,12 @@ class SingleLikedList
 	//先初始化一个头节点,头节点不要动，不要存放具体的数据
 	private HeroNode head=new HeroNode(0,"","");
 	
+	//返回头节点
+	public HeroNode getHead()
+	{
+		return head;
+	}
+
 	//添加节点到单向链表
 	//思路，当不考虑编号顺序时
 	//1.找到当前链表的最后节点
@@ -138,7 +239,7 @@ class SingleLikedList
 		}
 	}
 	
-	//修改节点的信息，根据编号来修该，即no不能该
+	//修改节点的信息，根据编号来修该，即no不能改
 	//1.根据newHeroNode的no来修改即可
 	public void update(HeroNode newHeroNode)
 	{
