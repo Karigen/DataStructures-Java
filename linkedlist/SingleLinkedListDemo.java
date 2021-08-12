@@ -1,5 +1,7 @@
 package linkedlist;
 
+import java.util.Stack;
+
 /*
  * 链表设计思路：
  * 添加（创建）
@@ -28,6 +30,11 @@ package linkedlist;
  * 1.先定义一个节点reverseHead=new HeroNode();
  * 2.从头到尾遍历原来的链表，每遍历一个节点，就将其取出，并放在新的链表reverseHead的最前端
  * 3.原来的链表的head.next=reverseHead.next
+ * 
+ * 从未到头打印单链表
+ * 1.上面的题的要求就是逆序打印单链表。
+ * 2.方式1：先将单链表进行反转操作，然后在遍历即可，这样做的问题是会破坏原来的单链表的结构，不建议
+ * 3.方式2：可以利用栈这个数据结构，将各个节点压入到栈中，利用栈的先进后出的特点，就实现了逆序打印的效果
  */
 
 public class SingleLinkedListDemo
@@ -56,6 +63,10 @@ public class SingleLinkedListDemo
 		singleLikedList.list();
 		System.out.println("反转单链表");
 		reverseList(singleLikedList.getHead());
+		singleLikedList.list();
+		
+		System.out.println("测试逆序打印单链表，没有改变链表的结构");
+		reversePrint(singleLikedList.getHead());
 		
 		//加入按照编号的顺序
 		singleLikedList.addByOrder(hero1);
@@ -85,6 +96,31 @@ public class SingleLinkedListDemo
 		HeroNode res=findLastIndexNode(singleLikedList.getHead(),3);
 		System.out.println("res="+res);
 	}
+	
+	//方式2：
+	//可以利用栈这个数据结构，将各个节点压入到栈中，利用栈的先进后出的特点，就实现了逆序打印的效果
+	public static void reversePrint(HeroNode head)
+	{
+		if (head.next==null)
+		{
+			return;//空链表，不能打印
+		}
+		//创建一个栈，将各个节点压入栈中
+		Stack<HeroNode> stack=new Stack<HeroNode>();
+		HeroNode cur=head.next;
+		//将链表的所有节点压入栈
+		while (cur!=null)
+		{
+			stack.push(cur);
+			cur=cur.next;//cur后移，这样就可以压入下一个节点
+		}
+		//将栈中的节点进行打印，pop出栈
+		while (stack.size()>0)
+		{
+			System.out.println(stack.pop());//stack的特点是先进后出
+		}
+	}
+	
 	//将单链表进行反转
 	public static void reverseList(HeroNode head)
 	{
@@ -163,7 +199,7 @@ public class SingleLinkedListDemo
 		}
 		return length;
 	}
-
+	//合并两个有序的单链表，合并之后的链表依然有序【课后联系】
 }
 
 //定义SingleLinkedList管理我们的英雄
