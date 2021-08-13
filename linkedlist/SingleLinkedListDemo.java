@@ -380,7 +380,7 @@ class HeroNode
 	public int no;
 	public String name;
 	public String nickName;
-	public HeroNode next;
+	public HeroNode next;//指向下一个节点
 	//构造器
 	public HeroNode(int no,String name,String nickName)
 	{
