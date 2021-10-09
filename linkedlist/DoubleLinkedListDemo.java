@@ -13,6 +13,8 @@ package linkedlist;
  *  2.直接找到要删除的这个节点，比如temp
  *  3.temp.pre=temp.next
  *  4.temp.next.pre=temp.pre
+ *  
+ *  pre next 看成链子即可
  */
 
 public class DoubleLinkedListDemo
