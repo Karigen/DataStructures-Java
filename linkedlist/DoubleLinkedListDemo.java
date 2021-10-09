@@ -15,6 +15,7 @@ package linkedlist;
  *  4.temp.next.pre=temp.pre
  *  
  *  pre next 看成链子即可
+ *  增删时都是现连后断
  */
 
 public class DoubleLinkedListDemo
