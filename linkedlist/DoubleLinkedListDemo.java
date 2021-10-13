@@ -16,6 +16,8 @@ package linkedlist;
  *  
  *  pre next 看成链子即可
  *  增删时都是现连后断
+ *  
+ *  头结点/尾结点不算在正经链表内，即头结点/尾结点不入环，只用其next指针指向环内结点
  */
 
 public class DoubleLinkedListDemo
