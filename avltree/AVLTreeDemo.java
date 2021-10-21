@@ -1,5 +1,16 @@
 package avltree;
 
+/*
+ * AVLTree
+ * 左旋：
+ * 1.创建一个新结点 newNode ，创建一个新的结点，值等于当前根结点的值
+ * 2.把新结点的左子树设置为当前结点的左子树
+ * 3.把新结点的右子树设置为当前结点的右子树的左子树
+ * 4.把当前结点的值换为右子结点的值
+ * 5.把当前结点的右子树设置成当前结点的右子树的右子树
+ * 6.把当前结点的左子树（左子结点）设置成新的结点
+ */
+
 public class AVLTreeDemo {
 
     public static void main(String[] args) {
@@ -17,7 +28,7 @@ public class AVLTreeDemo {
 	System.out.println("中序遍历");
 	avlTree.infixOrder();
 
-	System.out.println("在没有平衡处理前");
+	System.out.println("在平衡处理后");
 	System.out.println("树的高度=" + avlTree.getRoot().height());// 4
 	System.out.println("树的左子树高度=" + avlTree.getRoot().leftHeight());// 1
 	System.out.println("树的右子树高度=" + avlTree.getRoot().rightHeight());// 3
@@ -191,6 +202,27 @@ class Node {
 	return Math.max(left == null ? 0 : left.height(), right == null ? 0 : right.height()) + 1;
     }
 
+    // 左旋转方法
+    private void leftRotate() {
+	// 创建新的结点，以当前根结点的值
+	Node newNode = new Node(value);
+
+	// 把新结点的左子树设置为当前结点的左子树
+	newNode.left = left;
+
+	// 把新结点的右子树设置为当前结点的右子树的左子树
+	newNode.right = right.left;
+
+	// 把当前结点的值换为右子结点的值
+	value = right.value;
+
+	// 把当前结点的右子树设置成当前结点的右子树的右子树
+	right = right.right;
+
+	// 把当前结点的左子树（左子结点）设置成新的结点
+	left = newNode;
+    }
+
     // 查找要删除的结点
     /**
      * 
@@ -266,6 +298,11 @@ class Node {
 		// 递归的向右子树添加
 		this.right.add(node);
 	    }
+	}
+
+	// 当添加完一个结点后，如果：（右子树的高度-左子树的高度）>1，左旋转
+	if (rightHeight() - leftHeight() > 1) {
+	    leftRotate();// 左旋转
 	}
     }
 
