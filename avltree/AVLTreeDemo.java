@@ -2,19 +2,31 @@ package avltree;
 
 /*
  * AVLTree
+ * 它是一棵空树或它的左右两个子树的高度差的绝对值不超过1，并且左右两个子树都是一棵平衡二叉树
+ * 
  * 左旋：
- * 1.创建一个新结点 newNode ，创建一个新的结点，值等于当前根结点的值
+ * 1.创建一个新结点 newNode ，创建一个新的结点，值等于当前根结点的值	
  * 2.把新结点的左子树设置为当前结点的左子树
  * 3.把新结点的右子树设置为当前结点的右子树的左子树
  * 4.把当前结点的值换为右子结点的值
  * 5.把当前结点的右子树设置成当前结点的右子树的右子树
  * 6.把当前结点的左子树（左子结点）设置成新的结点
+ * 
+ * 右旋：
+ * 1.创建一个新的结点 newNode ，创建一个新的结点，值等于当前根结点的值
+ * 2.把新结点的右子树设置为当前结点的右子树
+ * 3.把新结点的左子树设置为当前结点的左子树的右子树
+ * 4.把当前结点的值换为左子结点的值
+ * 5.把当前结点的左子树设置成当前结点的左子树的左子树
+ * 6.把当前结点的右子树（右子结点）设置成新的结点
  */
 
 public class AVLTreeDemo {
 
     public static void main(String[] args) {
-	int[] arr = { 4, 3, 6, 5, 7, 8 };
+	// int[] arr = { 4, 3, 6, 5, 7, 8 };
+	// int[] arr = { 10, 12, 8, 9, 7, 6 };
+	int[] arr = { 10, 11, 7, 6, 8, 9 };
 
 	// 创建一个AVLTree对象
 	AVLTree avlTree = new AVLTree();
@@ -29,9 +41,10 @@ public class AVLTreeDemo {
 	avlTree.infixOrder();
 
 	System.out.println("在平衡处理后");
-	System.out.println("树的高度=" + avlTree.getRoot().height());// 4
-	System.out.println("树的左子树高度=" + avlTree.getRoot().leftHeight());// 1
-	System.out.println("树的右子树高度=" + avlTree.getRoot().rightHeight());// 3
+	System.out.println("树的高度=" + avlTree.getRoot().height());// 3
+	System.out.println("树的左子树高度=" + avlTree.getRoot().leftHeight());// 2
+	System.out.println("树的右子树高度=" + avlTree.getRoot().rightHeight());// 2
+	System.out.println("当前的根结点=" + avlTree.getRoot());// 8
     }
 
 }
@@ -223,6 +236,16 @@ class Node {
 	left = newNode;
     }
 
+    // 右旋转
+    private void rightRotate() {
+	Node newNode = new Node(value);
+	newNode.right = right;
+	newNode.left = left.right;
+	value = left.value;
+	left = left.left;
+	right = newNode;
+    }
+
     // 查找要删除的结点
     /**
      * 
@@ -302,7 +325,33 @@ class Node {
 
 	// 当添加完一个结点后，如果：（右子树的高度-左子树的高度）>1，左旋转
 	if (rightHeight() - leftHeight() > 1) {
-	    leftRotate();// 左旋转
+	    // 如果它的右子树的左子树的高度大于它的右子树的右子树的高度
+	    if (right != null && right.leftHeight() > right.rightHeight()) {
+		// 先对右子结点进行右旋转
+		right.rightRotate();
+
+		// 然后在对当前结点进行左旋转
+		leftRotate();// 左旋转
+	    } else {
+		// 直接进行左旋转即可
+		leftRotate();
+	    }
+	    return;// 必须要
+	}
+
+	// 当添加完一个结点后，如果：（左子树的高度-右子树的高度）>1，右旋转
+	if (leftHeight() - rightHeight() > 1) {
+	    // 如果它的左子树的的右子树的高度大于它的左子树的高度
+	    if (left != null && left.rightHeight() > left.leftHeight()) {
+		// 先对当前结点的左结点（左子树）->左旋转
+		left.leftRotate();
+
+		// 再对当前结点进行右旋转
+		rightRotate();
+	    } else {
+		// 直接进行右旋转即可
+		rightRotate();
+	    }
 	}
     }
 
